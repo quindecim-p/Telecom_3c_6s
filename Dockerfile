@@ -8,6 +8,7 @@ WORKDIR /app
 # Копируем Maven Wrapper (если используешь) для сборки внутри контейнера
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
+RUN chmod +x mvnw
 
 # (Опционально, но ускоряет сборку) Скачиваем зависимости перед копированием исходников
 # RUN ./mvnw dependency:go-offline
@@ -17,6 +18,7 @@ COPY src ./src
 
 # Собираем приложение, пропускаем тесты, так как они будут отдельно
 # Используй -Pprod, если у тебя есть профиль для продакшена
+RUN ls -la && echo "--- POM ---" && cat pom.xml && echo "--- MVNW ---" && cat mvnw || echo "mvnw not found"
 RUN ./mvnw package -DskipTests
 
 # --- Финальная стадия (Final Stage) ---

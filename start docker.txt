@@ -1,7 +1,13 @@
 d:
 
-D:\BSUIR\3 course\6 semester\_курсовой проект_\Telecom
+cd D:\BSUIR\3 course\6 semester\_курсовой проект_\Telecom
 
 docker-compose up --build
 
 docker-compose down
+
+
+
+mvn clean package -DskipTests
+mvn -N io.takari:maven:wrapper
+mvn -N wrapper:wrapper
