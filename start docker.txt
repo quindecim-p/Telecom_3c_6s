@@ -10,4 +10,3 @@ docker-compose down
 
 mvn clean package -DskipTests
 mvn -N io.takari:maven:wrapper
-mvn -N wrapper:wrapper

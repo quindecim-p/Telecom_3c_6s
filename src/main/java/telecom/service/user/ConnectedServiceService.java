@@ -91,8 +91,16 @@ public class ConnectedServiceService {
      */
     @Transactional(readOnly = true)
     public List<ConnectedService> getAllServicesForSubscriber(String login) {
-        Subscriber subscriber = findSubscriberByLogin(login);
-        return connectedServiceRepository.findBySubscriberOrderByStatusAscStartDateDesc(subscriber);
+        try {
+            Subscriber subscriber = findSubscriberByLogin(login);
+            return connectedServiceRepository.findBySubscriberOrderByStatusAscStartDateDesc(subscriber);
+        } catch (UsernameNotFoundException | EntityNotFoundException e) {
+            System.err.println("User or Subscriber not found in getAllServicesForSubscriber: " + e.getMessage());
+            return List.of();
+        } catch (Exception e) {
+            System.err.println("UNEXPECTED error in getAllServicesForSubscriber for login '" + login + "':");
+            return List.of();
+        }
     }
 
     /**
@@ -115,6 +123,7 @@ public class ConnectedServiceService {
     public double calculateTotalMonthlyCost(String login) {
         List<ConnectedService> activeServices = getActiveServicesForSubscriber(login);
         return activeServices.stream()
+                .filter(service -> service.getTariffPlan() != null && service.getTariffPlan().getMonthlyPayment() != null)
                 .mapToDouble(service -> service.getTariffPlan().getMonthlyPayment().doubleValue())
                 .sum();
     }

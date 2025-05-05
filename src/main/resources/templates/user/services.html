@@ -63,7 +63,7 @@
     </div>
 
     <div th:unless="${services != null and not #lists.isEmpty(services)}">
-        <p th:unless="${infoMessage or errorMessage}" class="message message-info">У вас пока нет подключенных или ожидающих услуг.</p>
+        <p th:unless="${infoMessage != null or errorMessage != null}" class="message message-info">У вас пока нет подключенных или ожидающих услуг.</p>
         <p><a th:href="@{/tariffs}" class="button">Выбрать и подключить услуги</a></p>
     </div>
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Неверный запрос (400)</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container error-container">
+    <div class="error-code">400</div>
+    <div class="error-message">Неверный запрос</div>
+    <p>Ваш браузер отправил запрос, который сервер не смог понять или обработать.</p>
+    <p>Это может быть связано с ошибкой в данных формы или неверным форматом запроса.</p>
+    <a th:href="@{/}" class="button" style="margin-top: 20px;">Вернуться на главную</a>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

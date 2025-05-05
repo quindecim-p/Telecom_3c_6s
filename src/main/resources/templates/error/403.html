@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <title>Доступ запрещен (403)</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container error-container">
+  <div class="error-code">403</div>
+  <div class="error-message">Доступ запрещен</div>
+  <p>К сожалению, у вас нет прав для доступа к этой странице или ресурсу.</p>
+  <div sec:authorize="isAuthenticated()" class="user-info">
+    <p>Пожалуйста, убедитесь, что у вас есть необходимые права, или свяжитесь с администратором.</p>
+  </div>
+  <div sec:authorize="isAnonymous()">
+    <p>Возможно, вам необходимо <a th:href="@{/login}">войти в систему</a> с аккаунтом, имеющим соответствующие права.</p>
+  </div>
+  <a th:href="@{/}" class="button" style="margin-top: 20px;">Вернуться на главную</a>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

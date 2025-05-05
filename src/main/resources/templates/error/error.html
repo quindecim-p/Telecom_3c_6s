@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Произошла ошибка</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container error-container">
+    <div class="error-code" th:text="${status ?: '???'}">XXX</div>
+    <div class="error-message" th:text="${error ?: 'Неизвестная ошибка'}">Описание ошибки</div>
+    <p>К сожалению, произошла непредвиденная ошибка.</p>
+    <p>Попробуйте вернуться на главную страницу или повторить попытку позже.</p>
+    <a th:href="@{/}" class="button" style="margin-top: 20px;">Вернуться на главную</a>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

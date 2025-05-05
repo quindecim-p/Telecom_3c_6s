@@ -1168,3 +1168,9 @@ td.subscriber-info span { display: block; font-size: 0.9em; color: #555; }
 }
 .stats-list { list-style: none; padding-left: 0; }
 .stats-list li { margin-bottom: 5px; }
+
+.error-container { text-align: center; padding: 40px 20px; }
+.error-code { font-size: 6em; font-weight: bold; color: #dc3545; margin-bottom: 0; }
+.error-message { font-size: 1.5em; color: #6c757d; margin-top: 0; margin-bottom: 20px;}
+.error-details { font-size: 0.9em; color: #888; margin-top: 30px; text-align: left; background-color: #f8f9fa; padding: 15px; border-radius: 5px; max-width: 800px; margin-left: auto; margin-right: auto;}
+.stack-trace { white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background-color: #fff; font-size: 0.8em; margin-top: 10px;}
