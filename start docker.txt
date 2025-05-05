@@ -1,0 +1,7 @@
+d:
+
+D:\BSUIR\3 course\6 semester\_курсовой проект_\Telecom
+
+docker-compose up --build
+
+docker-compose down
