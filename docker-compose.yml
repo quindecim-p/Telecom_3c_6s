@@ -1,0 +1,52 @@
+version: '3.8' # Используем современную версию синтаксиса
+
+services:
+  # Сервис Базы Данных (MySQL)
+  db:
+    image: mysql:8.0 # Используем официальный образ MySQL 8.0 (или другую версию)
+    container_name: telecom_db_container # Имя контейнера (опционально)
+    restart: always # Всегда перезапускать контейнер БД
+    environment:
+      # ВАЖНО: Замени 'your_strong_password' на надежные пароли!
+      MYSQL_ROOT_PASSWORD: root123 # Пароль для root пользователя MySQL
+      MYSQL_DATABASE: telecom_db # Имя базы данных, которую нужно создать
+      MYSQL_USER: telecom_user # Имя пользователя для приложения
+      MYSQL_PASSWORD: 123456 # Пароль для пользователя приложения
+    ports:
+      # Проброс порта (опционально): локальный_порт:порт_контейнера
+      # Позволяет подключиться к БД с твоего компьютера для отладки
+      - "3307:3306" # Локальный порт 3307 будет вести к порту 3306 контейнера
+    volumes:
+      # Том для сохранения данных MySQL между перезапусками контейнера
+      - db_data:/var/lib/mysql
+    healthcheck: # Проверка готовности БД (опционально, но полезно)
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Сервис Приложения (Spring Boot)
+  app:
+    container_name: telecom_app_container # Имя контейнера (опционально)
+    build: . # Собирать образ из Dockerfile в текущей директории
+    restart: always # Всегда перезапускать контейнер приложения
+    depends_on: # Запускать ПОСЛЕ базы данных
+      db:
+        condition: service_healthy # Ждать успешного healthcheck от db (если он есть)
+        # Если healthcheck нет, можно использовать: depends_on: [db]
+        # но это не гарантирует готовность БД, может потребоваться логика ожидания в приложении
+    ports:
+      # Проброс порта приложения: локальный_порт:порт_контейнера
+      - "8080:8080" # Локальный порт 8080 ведет к порту 8080 контейнера
+    environment:
+      # Переменные окружения для Spring Boot, переопределяющие application.properties
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/telecom_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: telecom_user # Должен совпадать с MYSQL_USER
+      SPRING_DATASOURCE_PASSWORD: 123456 # Должен совпадать с MYSQL_PASSWORD
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate # Или 'update' для первого запуска, чтобы создать/обновить схему. 'validate' безопаснее. 'none' для продакшена.
+      # Другие переменные окружения, если нужны (например, для профилей Spring)
+      # SPRING_PROFILES_ACTIVE: docker
+
+# Определяем именованный том для хранения данных БД
+volumes:
+  db_data: {}

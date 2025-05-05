@@ -1,0 +1,8 @@
+use telecom;
+
+DROP TABLE IF EXISTS ConnectedService;
+DROP TABLE IF EXISTS BillingAccount;
+DROP TABLE IF EXISTS TariffPlan;
+DROP TABLE IF EXISTS Subscriber;
+DROP TABLE IF EXISTS PersonData;
+DROP TABLE IF EXISTS User;

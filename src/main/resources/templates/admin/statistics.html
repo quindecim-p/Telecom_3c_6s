@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Статистика Сайта</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1>Статистика сайта</h1>
+
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+
+    <div th:if="${stats}">
+
+        <!-- Секция: Пользователи -->
+        <section class="stats-section">
+            <h2>Пользователи</h2>
+            <div class="stats-grid">
+                <div class="stats-item">
+                    <strong th:text="${stats.totalUserCount}">0</strong>
+                    <span>Всего пользователей</span>
+                </div>
+                <div class="stats-item">
+                    <strong th:text="${stats.subscriberUserCount}">0</strong>
+                    <span>Зарегистрировано абонентов</span>
+                </div>
+                <div class="stats-item">
+                    <strong th:text="${stats.bannedUserCount}">0</strong>
+                    <span>Заблокировано пользователей</span>
+                </div>
+                <div class="stats-item">
+                    <span>По ролям:</span>
+                    <ul class="stats-list" th:if="${stats.userCountsByRole != null and not stats.userCountsByRole.isEmpty()}">
+                        <!-- Используем #maps.keySet() для итерации по ключам -->
+                        <li th:each="role : ${stats.userCountsByRole.keySet()}"
+                            th:text="${role.name()} + ': ' + ${stats.userCountsByRole.get(role)}">ROLE: 0</li>
+                    </ul>
+                    <span th:unless="${stats.userCountsByRole != null and not stats.userCountsByRole.isEmpty()}">N/A</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция: Услуги -->
+        <section class="stats-section">
+            <h2>Услуги (Подключения)</h2>
+            <div class="stats-grid">
+                <div class="stats-item">
+                    <strong th:text="${stats.totalConnectedServicesCount}">0</strong>
+                    <span>Всего записей об услугах</span>
+                </div>
+                <div class="stats-item">
+                    <strong th:text="${stats.pendingApplicationsCount}">0</strong>
+                    <span>Ожидают подключения</span>
+                </div>
+
+                <div class="stats-item">
+                    <span>Активные по типам:</span>
+                    <ul class="stats-list" th:if="${stats.activeServicesCountByType != null and not stats.activeServicesCountByType.isEmpty()}">
+                        <li th:each="typeStat : ${stats.activeServicesCountByType.entrySet()}"
+                            th:text="${typeStat.key.displayName ?: typeStat.key.name()} + ': ' + ${typeStat.value}">TYPE: 0</li>
+                    </ul>
+                    <span th:unless="${stats.activeServicesCountByType != null and not stats.activeServicesCountByType.isEmpty()}">N/A</span>
+                </div>
+                <div class="stats-item">
+                    <span>Распределение по статусам:</span>
+                    <ul class="stats-list" th:if="${stats.connectedServicesCountByStatus != null and not stats.connectedServicesCountByStatus.isEmpty()}">
+                        <li th:each="statusStat : ${stats.connectedServicesCountByStatus.entrySet()}"
+                            th:text="${statusStat.key.displayName ?: statusStat.key.name()} + ': ' + ${statusStat.value}">STATUS: 0</li>
+                    </ul>
+                    <span th:unless="${stats.connectedServicesCountByStatus != null and not stats.connectedServicesCountByStatus.isEmpty()}">N/A</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция: Финансы -->
+        <section class="stats-section">
+            <h2>Финансы</h2>
+            <div class="stats-grid">
+                <div class="stats-item">
+                    <strong th:text="${#numbers.formatDecimal(stats.totalMonthlyRevenue, 1, 'COMMA', 2, 'POINT')} + ' руб.'">0.00 руб.</strong>
+                    <span>Суммарный ежемесячный доход (с активных услуг)</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

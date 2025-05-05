@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить пользователя</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <div class="form-container">
+        <h2>Добавление нового пользователя</h2>
+
+        <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/users/add}" th:object="${userCreationForm}" method="post">
+
+            <div>
+                <label for="login">Логин:</label>
+                <input type="text" id="login" th:field="*{login}" required placeholder="Придумайте логин"/>
+                <span class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></span>
+            </div>
+            <div>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" th:field="*{password}" required placeholder="Придумайте пароль (мин. 6 символов)"/>
+                <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            </div>
+            <div>
+                <label for="confirmPassword">Подтвердите пароль:</label>
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required placeholder="Повторите пароль"/>
+                <span class="error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+            </div>
+            <div>
+                <label for="role">Роль:</label>
+                <select id="role" th:field="*{role}" required>
+                    <option value="">-- Выберите роль --</option>
+                    <option th:each="roleValue : ${allRoles}"
+                            th:value="${roleValue}"
+                            th:text="${roleValue}">ROLE_NAME</option>
+                </select>
+                <span class="error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></span>
+            </div>
+
+            <hr style="margin: 25px 0;">
+
+            <div>
+                <label for="fullName">ФИО:</label>
+                <input type="text" id="fullName" th:field="*{fullName}" required placeholder="Фамилия Имя Отчество"/>
+                <span class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+            </div>
+            <div>
+                <label for="phone">Телефон:</label>
+                <input type="tel" id="phone" th:field="*{phone}" required placeholder="+375XXXXXXXXX"/>
+                <span class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:field="*{email}" required placeholder="your.email@example.com"/>
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </div>
+            <div>
+                <label for="address">Адрес:</label>
+                <input type="text" id="address" th:field="*{address}" required placeholder="Город, улица, дом, квартира"/>
+                <span class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+            </div>
+            <div>
+                <label for="birthDate">Дата рождения:</label>
+                <input type="date" id="birthDate" th:field="*{birthDate}" required />
+                <span class="error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" class="button button-success">Добавить пользователя</button>
+                <a th:href="@{/admin/users}" class="button button-secondary" style="margin-left: 10px;">Отмена</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

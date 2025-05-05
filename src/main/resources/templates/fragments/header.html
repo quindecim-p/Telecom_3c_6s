@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<header th:fragment="header" class="main-header">
+    <nav class="main-nav container">
+        <a th:href="@{/}" class="nav-logo">TeleCom</a>
+
+        <ul class="nav-links">
+            <li><a th:href="@{/}" class="nav-link">Главная</a></li>
+
+            <!-- Меню Абонента -->
+            <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownServices" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Услуги
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownServices">
+
+                    <li>
+                        <a class="dropdown-item" th:href="@{/services/my}">Мои подключенные</a>
+                    </li>
+
+                    <li><hr class="dropdown-divider"></li>
+
+                    <li>
+                        <a class="dropdown-item" th:href="@{/tariffs}">Все доступные тарифы</a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" th:href="@{/tariffs#mobile}">Мобильная связь</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/tariffs#internet}">Интернет</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/tariffs#tv}">Телевидение</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/tariffs#secuirity}">Безопасность</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/tariffs#mix}">Комплекс</a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <!-- Меню Оператора -->
+            <li class="nav-item dropdown" sec:authorize="hasAnyRole('ROLE_OPERATOR')">
+                <a href="#" class="nav-link dropdown-toggle">Оператор</a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/operator/applications}">Управление заявками</a></li>
+                    <li><a th:href="@{/operator/subscribers}">Поиск абонентов</a></li>
+                </ul>
+            </li>
+
+            <!-- Меню Администратора -->
+            <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+                <a href="#" class="nav-link dropdown-toggle">Админ</a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/admin/users}">Управление пользователями</a></li>
+                    <li><a th:href="@{/admin/tariffs}">Управление тарифами</a></li>
+                    <li><a th:href="@{/admin/statistics}">Статистика</a></li>
+                </ul>
+            </li>
+
+            <!-- Профиль -->
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a th:href="@{/profile}" class="nav-link">Профиль</a>
+            </li>
+        </ul>
+
+        <!-- Кнопки Входа/Регистрации/Выхода -->
+        <div class="nav-auth">
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="button button-secondary">Войти</a>
+                <a th:href="@{/register}" class="button button-primary" style="margin-left: 10px;">Регистрация</a>
+            </div>
+
+            <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="button button-logout">
+                        Выйти
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+
+</body>
+</html>

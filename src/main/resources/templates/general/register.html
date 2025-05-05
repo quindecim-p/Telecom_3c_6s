@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Регистрация - TeleCom</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body class="auth-page">
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="auth-container">
+    <div class="auth-form">
+        <h1>Регистрация</h1>
+
+        <div th:if="${registrationError}" class="message message-error" th:text="${registrationError}"></div>
+
+        <form th:action="@{/register}" th:object="${registrationForm}" method="post">
+            <div class="form-group">
+                <label for="login">Логин:</label>
+                <input type="text" id="login" th:field="*{login}" required placeholder="Придумайте логин"/>
+                <span class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" th:field="*{password}" required placeholder="Придумайте пароль (мин. 6 символов)"/>
+                <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Подтвердите пароль:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Повторите пароль"/>
+                <span class="error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+            </div>
+            <div class="form-group">
+                <label for="fullName">ФИО:</label>
+                <input type="text" id="fullName" th:field="*{fullName}" required placeholder="Фамилия Имя Отчество"/>
+                <span class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+            </div>
+            <div class="form-group">
+                <label for="phone">Телефон:</label>
+                <input type="tel" id="phone" th:field="*{phone}" required placeholder="+375XXXXXXXXX"/>
+                <span class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:field="*{email}" required placeholder="your.email@example.com"/>
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </div>
+            <div class="form-group">
+                <label for="address">Адрес:</label>
+                <input type="text" id="address" th:field="*{address}" required placeholder="Город, улица, дом, квартира"/>
+                <span class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+            </div>
+            <div class="form-group">
+                <label for="birthDate">Дата рождения:</label>
+                <input type="date" id="birthDate" th:field="*{birthDate}" required/>
+                <span class="error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button button-primary">Зарегистрироваться</button>
+            </div>
+        </form>
+
+        <div class="auth-link">
+            Уже есть аккаунт? <a th:href="@{/login}">Войти</a>
+        </div>
+    </div>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

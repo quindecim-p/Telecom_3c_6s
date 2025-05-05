@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Профиль абонента</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1>Профиль пользователя</h1>
+
+    <div th:if="${successMessage}" class="message message-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+    <div th:if="${globalErrorMessage}" class="message message-error" th:text="${globalErrorMessage}"></div>
+    <div th:if="${personalDataError}" class="message message-error" th:text="${personalDataError}" id="personal-data-error-msg"></div>
+    <div th:if="${accountDataError}" class="message message-error" th:text="${accountDataError}" id="account-data-error-msg"></div>
+
+    <div th:if="${profileData}">
+
+        <!-- === Секция Данные Аккаунта === -->
+        <section class="profile-section" id="account-section">
+            <h2>Данные аккаунта</h2>
+            <!-- Режим Просмотра -->
+            <div class="view-mode">
+                <div th:if="${profileData.user}">
+                    <p>Логин: <strong th:text="${profileData.user.login}">login</strong></p>
+                    <p th:if="${profileData.user.isBanned()}" style="color:red;">Аккаунт заблокирован</p>
+                </div>
+                <div class="edit-controls">
+                    <button type="button" class="button button-secondary" onclick="toggleEdit('account-section', true)">Редактировать Логин/Пароль</button>
+                </div>
+            </div>
+            <!-- Режим Редактирования -->
+            <div class="edit-mode">
+                <form th:action="@{/profile/account}" th:object="${accountForm}" method="post">
+                    <p><em>Редактирование данных аккаунта</em></p>
+                    <div><label for="acc-login">Логин:</label><input type="text" id="acc-login" th:field="*{login}" required/><span class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></span></div>
+                    <p style="font-style: italic; color: #555; margin-top: 15px;">Для смены пароля заполните все три поля ниже...</p>
+                    <div><label for="acc-currentPassword">Текущий пароль:</label><input type="password" id="acc-currentPassword" th:field="*{currentPassword}" /><span class="error" th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"></span></div>
+                    <div><label for="acc-newPassword">Новый пароль:</label><input type="password" id="acc-newPassword" th:field="*{newPassword}" /><span class="error" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span></div>
+                    <div><label for="acc-confirmNewPassword">Подтвердите новый пароль:</label><input type="password" id="acc-confirmNewPassword" th:field="*{confirmNewPassword}" /><span class="error" th:if="${#fields.hasErrors('confirmNewPassword')}" th:errors="*{confirmNewPassword}"></span></div>
+                    <div class="edit-controls"><button type="submit" class="button">Сохранить</button><button type="button" class="button button-secondary" onclick="toggleEdit('account-section', false)">Отмена</button></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- === Секция Персональные Данные === -->
+        <section class="profile-section" id="personal-section">
+            <h2>Персональные данные</h2>
+            <!-- Режим Просмотра -->
+            <div class="view-mode">
+                <div th:if="${profileData.personData}">
+                    <p>ФИО: <strong th:text="${profileData.personData.fullName}">ФИО</strong></p>
+                    <p>Телефон: <strong th:text="${profileData.personData.phone}">Телефон</strong></p>
+                    <p>Email: <strong th:text="${profileData.personData.email}">Email</strong></p>
+                    <p>Адрес: <strong th:text="${profileData.personData.address}">Адрес</strong></p>
+                    <p>Дата рождения: <strong th:text="${#dates.format(profileData.personData.birthDate, 'dd.MM.yyyy')}">Дата рождения</strong></p>
+                </div>
+                <div th:unless="${profileData.personData}">
+                    <p>Персональные данные не заполнены.</p>
+                </div>
+                <div class="edit-controls">
+                    <button type="button" class="button button-secondary" onclick="toggleEdit('personal-section', true)">Редактировать</button>
+                </div>
+            </div>
+            <!-- Режим Редактирования -->
+            <div class="edit-mode">
+                <form th:action="@{/profile/personal}" th:object="${personDataForm}" method="post">
+                    <p><em>Редактирование персональных данных</em></p>
+                    <div><label for="pd-fullName">ФИО:</label><input type="text" id="pd-fullName" th:field="*{fullName}" required/><span class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span></div>
+                    <div><label for="pd-phone">Телефон:</label><input type="tel" id="pd-phone" th:field="*{phone}" required placeholder="+375291234567"/><span class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span></div>
+                    <div><label for="pd-email">Email:</label><input type="email" id="pd-email" th:field="*{email}" required/><span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
+                    <div><label for="pd-address">Адрес:</label><input type="text" id="pd-address" th:field="*{address}" required/><span class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span></div>
+                    <div><label for="pd-birthDate">Дата рождения:</label><input type="date" id="pd-birthDate" th:field="*{birthDate}" required/><span class="error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span></div>
+                    <div class="edit-controls"><button type="submit" class="button">Сохранить</button><button type="button" class="button button-secondary" onclick="toggleEdit('personal-section', false)">Отмена</button></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- === Секция Абонента === -->
+        <div sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+            <section class="profile-section" id="subscriber-section">
+                <div th:if="${profileData.billingAccount}">
+                    <h2>Лицевой счет</h2>
+                    <p>Номер счета: <strong th:text="${profileData.billingAccount.number}">Номер счета</strong></p>
+                    <p>Баланс: <strong th:text="${#numbers.formatDecimal(profileData.billingAccount.balance, 1, 'COMMA', 2, 'POINT')}">Баланс</strong> руб.</p>
+                </div>
+                <div th:unless="${profileData.billingAccount}">
+                    <p>Лицевой счет не найден.</p>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    <div th:unless="${profileData}" class="message message-info">
+        <p>Данные профиля не загружены.</p>
+    </div>
+
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+<script>
+    function toggleEdit(sectionId, isEditing) {
+        const section = document.getElementById(sectionId);
+        if (!section) return;
+        const viewMode = section.querySelector('.view-mode');
+        const editMode = section.querySelector('.edit-mode');
+        if (viewMode && editMode) {
+            viewMode.style.display = isEditing ? 'none' : 'block';
+            editMode.style.display = isEditing ? 'block' : 'none';
+        }
+    }
+    function showFormsOnError() {
+        const personalSection = document.getElementById('personal-section');
+        const personalFieldsError = personalSection?.querySelector('.edit-mode .error');
+        const personalGlobalError = document.getElementById('personal-data-error-msg');
+        if (personalFieldsError || (personalGlobalError && personalGlobalError.textContent.trim() !== '')) {
+            toggleEdit('personal-section', true);
+        }
+        const accountSection = document.getElementById('account-section');
+        const accountFieldsError = accountSection?.querySelector('.edit-mode .error');
+        const accountGlobalError = document.getElementById('account-data-error-msg');
+        if (accountFieldsError || (accountGlobalError && accountGlobalError.textContent.trim() !== '')) {
+            toggleEdit('account-section', true);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', showFormsOnError);
+</script>
+
+</body>
+</html>

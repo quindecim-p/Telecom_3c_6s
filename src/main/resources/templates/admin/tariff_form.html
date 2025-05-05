@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}">Форма тарифа</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1 th:text="${pageTitle}">Заголовок формы</h1>
+
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/admin/tariffs/save}" th:object="${tariff}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <div>
+            <label for="name">Название тарифа:</label>
+            <input type="text" id="name" th:field="*{name}" required/>
+            <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        </div>
+
+        <div>
+            <label for="type">Тип тарифа:</label>
+            <select id="type" th:field="*{type}" required>
+                <option value="">-- Выберите тип --</option>
+                <option th:each="t : ${tariffTypes}"
+                        th:value="${t}"
+                        th:text="${t.getDisplayName()}">
+                TARIFF_TYPE_NAME
+                </option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+        </div>
+
+        <div>
+            <label for="monthlyPayment">Ежемесячная плата (руб.):</label>
+            <input type="number" id="monthlyPayment" th:field="*{monthlyPayment}" required step="0.01" min="0"/>
+            <span class="error" th:if="${#fields.hasErrors('monthlyPayment')}" th:errors="*{monthlyPayment}"></span>
+        </div>
+
+        <div>
+            <label for="description">Описание:</label>
+            <textarea id="description" th:field="*{description}" rows="4" required></textarea>
+            <span class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+        </div>
+
+        <div>
+            <button type="submit" class="button button-success">Сохранить</button>
+            <a th:href="@{/admin/tariffs}" class="button button-secondary">Отмена</a>
+        </div>
+
+    </form>
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

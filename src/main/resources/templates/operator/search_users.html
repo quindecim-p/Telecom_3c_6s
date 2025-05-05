@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle ?: 'Поиск абонентов'}">Поиск абонентов</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1 th:text="${pageTitle ?: 'Поиск абонентов'}">Поиск абонентов</h1>
+
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+
+    <div class="search-form-container">
+        <form th:action="@{/operator/subscribers}" method="get">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="keyword">Ключевое слово:</label>
+                    <input type="search" id="keyword" name="keyword" placeholder="Логин, ФИО, email, тел..." th:value="${keyword}"/>
+                </div>
+                <div class="input-group">
+                    <label for="address">Адрес:</label>
+                    <input type="text" id="address" name="address" placeholder="Часть адреса..." th:value="${address}"/>
+                </div>
+                <div class="input-group">
+                    <label for="banned">Статус бана:</label>
+                    <select id="banned" name="banned">
+                        <option value="" th:selected="${banned == null}">Любой</option>
+                        <option value="false" th:selected="${banned != null and banned == false}">Не забанен</option>
+                        <option value="true" th:selected="${banned != null and banned == true}">Забанен</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-group two-in-row"> <!-- Класс для возможной настройки ширины -->
+                    <label for="minServices">Мин. активных услуг:</label>
+                    <input type="number" id="minServices" name="minServices" min="0" step="1" th:value="${minServices}" placeholder="Напр. 1"/>
+                </div>
+                <div class="input-group two-in-row"> <!-- Класс для возможной настройки ширины -->
+                    <label for="maxServices">Макс. активных услуг:</label>
+                    <input type="number" id="maxServices" name="maxServices" min="0" step="1" th:value="${maxServices}" placeholder="Напр. 5"/>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="button">Найти</button>
+                    <a th:href="@{/operator/subscribers}" class="button button-secondary">Сбросить</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${subscriberViews != null}">
+        <div th:if="${not #lists.isEmpty(subscriberViews)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ФИО</th>
+                    <th>Телефон</th>
+                    <th>Email</th>
+                    <th>Адрес</th>
+                    <th>Дата рожд.</th>
+                    <th>Баланс</th>
+                    <th>Актив. услуг</th>
+                    <th>Стоимость (мес.)</th>
+                    <th>Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="view : ${subscriberViews}">
+                    <td th:text="${view.userId}">ID</td>
+                    <td th:text="${view.fullName}">ФИО</td>
+                    <td th:text="${view.phone}">Телефон</td>
+                    <td th:text="${view.email}">Email</td>
+                    <td th:text="${view.address}">Адрес</td>
+                    <td th:text="${view.birthDate != null ? #dates.format(view.birthDate, 'dd.MM.yyyy') : '-'}">Дата рожд.</td>
+                    <td th:text="${#numbers.formatDecimal(view.balance, 1, 'COMMA', 2, 'POINT')} + ' руб.'" style="text-align: center;">0.00 руб.</td>
+                    <td th:text="${view.activeServiceCount}" style="text-align: center;">0</td>
+                    <td th:text="${#numbers.formatDecimal(view.totalMonthlyCost, 1, 'COMMA', 2, 'POINT')} + ' руб.'" style="text-align: center;">0.00 руб.</td>
+                    <td>
+                        <span th:if="${!view.isBanned()}" style="color: green;">Активен</span>
+                        <span th:if="${view.isBanned()}" style="color: red;">Забанен</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:unless="${not #lists.isEmpty(subscriberViews)}">
+            <p class="message message-info">Абоненты, соответствующие заданным фильтрам, не найдены.</p>
+        </div>
+    </div>
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

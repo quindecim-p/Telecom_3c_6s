@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle ?: 'Мои услуги'}">Мои услуги</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1 th:text="${pageTitle ?: 'Мои услуги'}">Мои услуги</h1>
+
+    <div th:if="${successMessage}" class="message message-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+    <div th:if="${infoMessage}" class="message message-info" th:text="${infoMessage}"></div>
+
+    <div th:if="${services != null and not #lists.isEmpty(services)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Название тарифа</th>
+                <th>Тип</th>
+                <th>Ежемесячная оплата</th>
+                <th>Дата начала/заявки</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="service : ${services}">
+                <td th:text="${service.tariffPlan?.name}">Тариф</td>
+                <td th:text="${service.tariffPlan?.type}">Тип</td>
+                <td th:text="${#numbers.formatDecimal(service.tariffPlan?.monthlyPayment, 1, 'COMMA', 2, 'POINT') + ' руб.'}">0.00 руб.</td>
+                <td th:text="${#temporals.format(service.startDate, 'dd.MM.yyyy')}">Дата</td>
+                <td>
+                    <span th:switch="${service.status?.name()}">
+                                <span th:case="'PENDING'" class="status-pending">Ожидает подтверждения</span>
+                                <span th:case="'ACTIVE'" class="status-active">Активна</span>
+                                <span th:case="'INACTIVE'" class="status-inactive">Отключена</span>
+                                <span th:case="'REJECTED'" class="status-rejected">Отклонена</span>
+                                <span th:case="*">Неизвестный</span>
+                            </span>
+                </td>
+                <td class="service-actions">
+                    <form th:if="${service.status?.name() == 'ACTIVE'}"
+                          th:action="@{/services/disconnect}" method="post"
+                          onsubmit="return confirm('Вы уверены, что хотите отключить услугу?');">
+                        <input type="hidden" name="serviceId" th:value="${service.id}" />
+                        <span th:id="'tariffName-' + ${service.id}" style="display:none;" th:text="${service.tariffPlan?.name}"></span>
+                        <button type="submit" class="button button-danger">Отключить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="total-cost">
+            Общая ежемесячная оплата за активные услуги:
+            <span th:text="${#numbers.formatDecimal(totalMonthlyCost, 1, 'COMMA', 2, 'POINT')} + ' руб.'">0.00 руб.</span>
+        </div>
+
+    </div>
+
+    <div th:unless="${services != null and not #lists.isEmpty(services)}">
+        <p th:unless="${infoMessage or errorMessage}" class="message message-info">У вас пока нет подключенных или ожидающих услуг.</p>
+        <p><a th:href="@{/tariffs}" class="button">Выбрать и подключить услуги</a></p>
+    </div>
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

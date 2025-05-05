@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Вход в систему - TeleCom</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body class="auth-page">
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="auth-container">
+    <div class="auth-form">
+        <h1>Вход</h1>
+
+        <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+        <div th:if="${logoutMessage}" class="message message-info" th:text="${logoutMessage}"></div>
+        <div th:if="${param.registered}" class="message message-success">
+            Регистрация прошла успешно! Теперь вы можете войти.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" name="username" required autofocus placeholder="Введите ваш логин"/>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required placeholder="Введите ваш пароль"/>
+                <!-- Можно добавить ссылку "Забыли пароль?" -->
+                <!-- <div style="text-align: right; font-size: 0.85em; margin-top: 5px;"><a href="#">Забыли пароль?</a></div> -->
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button button-primary">Войти</button>
+            </div>
+        </form>
+
+        <div class="auth-link">
+            Нет аккаунта? <a th:href="@{/register}">Зарегистрироваться</a>
+        </div>
+    </div>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<footer th:fragment="footer" class="main-footer">
+    <div class="footer-container">
+        <div class="footer-columns">
+
+            <div class="footer-column">
+                <div class="footer-logo">TeleCom</div>
+                <p>Ваш надежный провайдер связи. Высокая скорость, стабильное соединение и качественный сервис.</p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Навигация</h3>
+                <ul>
+                    <li><a th:href="@{/}">Главная</a></li>
+                    <li><a th:href="@{/tariffs}">Все тарифы</a></li>
+                    <li><a th:href="'mailto:support@telecom.com'">Поддержка</a></li>
+                    <li><a th:href="@{/#about-company}">О компании</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Контакты</h3>
+                <p><strong>Телефон:</strong> +375 (29) 253-51-73</p>
+                <p><strong>Email:</strong> <a th:href="'mailto:support@telecom.com'">support@telecom.com</a></p>
+                <p><strong>Адрес:</strong> г. Минск, ул. Немига, д. 7</p>
+            </div>
+
+        </div>
+        <div class="footer-bottom">
+            <p>© <span th:text="${#dates.year(#dates.createNow())}"></span> TeleCom. Все права защищены.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Доступные тарифы</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1>Доступные тарифные планы</h1>
+
+    <div th:if="${successMessage}" class="message message-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+
+    <div class="tariff-navigation" th:if="${groupedTariffs != null and not groupedTariffs.isEmpty()}">
+        <span>Перейти к: </span>
+        <a th:each="type : ${serviceTypes}"
+           th:href="'#' + ${#strings.toLowerCase(type.name())}"
+           th:text="${type.displayName}">
+            Тип Услуги
+        </a>
+    </div>
+
+    <div th:each="type : ${serviceTypes}">
+        <div th:if="${groupedTariffs != null and groupedTariffs.containsKey(type) and not #lists.isEmpty(groupedTariffs.get(type))}"
+             class="tariff-section">
+
+            <h2 th:id="${#strings.toLowerCase(type.name())}" th:text="${type.displayName}">
+                Тип Услуги
+            </h2>
+
+            <div th:each="tariff : ${groupedTariffs.get(type)}" class="tariff-list-item">
+                <div class="tariff-list-item-info">
+                    <h3 th:text="${tariff.name}">Название тарифа</h3>
+                    <p th:text="${tariff.description}">Описание тарифа</p>
+                    <p class="price" th:text="${#numbers.formatDecimal(tariff.monthlyPayment, 1, 'COMMA', 2, 'POINT')} + ' руб./мес.'">100.00 руб./мес.</p>
+                </div>
+
+                <div class="tariff-list-item-actions">
+                    <th:block th:with="isPendingOrConnected=${connectedOrPendingIds.contains(tariff.id)}">
+                        <form th:action="@{/tariffs/connect}" method="post"
+                              sec:authorize="hasRole('ROLE_SUBSCRIBER')"
+                              th:if="${!isPendingOrConnected}">
+                            <input type="hidden" name="tariffPlanId" th:value="${tariff.id}" />
+                            <button type="submit" class="button action-button">Подключить</button>
+                        </form>
+
+                        <div th:if="${isPendingOrConnected}" sec:authorize="hasRole('ROLE_SUBSCRIBER')">
+                            <span class="status-message connected">Уже подключен или ожидает</span>
+                        </div>
+
+                        <span class="status-message" sec:authorize="!hasRole('ROLE_SUBSCRIBER')">
+                            Войдите как абонент для подключения
+                        </span>
+                    </th:block>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${groupedTariffs == null or groupedTariffs.isEmpty()}">
+        <p class="message message-info">Нет доступных тарифных планов.</p>
+    </div>
+
+    <div class="page-actions" style="margin-top: 30px;">
+        <a th:href="@{/profile}" class="button button-secondary">Вернуться в профиль</a>
+    </div>
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

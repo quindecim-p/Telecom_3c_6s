@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Управление тарифами</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1>Управление тарифами</h1>
+
+    <div th:if="${successMessage}" class="message message-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message message-error" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/admin/tariffs}" method="get" class="filter-form">
+        <div>
+            <label for="nameKeyword">Название:</label>
+            <input type="text" id="nameKeyword" name="nameKeyword" placeholder="Часть названия..." th:value="${nameKeyword}">
+        </div>
+        <div>
+            <label for="tariffType">Тип тарифа:</label>
+            <select id="tariffType" name="tariffType">
+                <option value="">-- Все типы --</option>
+                <option th:each="t : ${tariffTypes}"
+                        th:value="${t}"
+                        th:text="${t.getDisplayName()}"
+                        th:selected="${t == selectedTariffType}">
+                    TYPE_NAME
+                </option>
+            </select>
+        </div>
+        <div class="price-range">
+            <div>
+                <label for="minPrice">Цена от:</label>
+                <input type="number" id="minPrice" name="minPrice" placeholder="Мин." step="0.01" min="0" th:value="${minPrice}">
+            </div>
+            <div>
+                <label for="maxPrice">до:</label>
+                <input type="number" id="maxPrice" name="maxPrice" placeholder="Макс." step="0.01" min="0" th:value="${maxPrice}">
+            </div>
+        </div>
+        <div class="filter-buttons">
+            <button type="submit" class="button">Применить</button>
+            <a th:href="@{/admin/tariffs}" class="button button-secondary">Сбросить</a>
+        </div>
+    </form>
+
+    <div style="margin-bottom: 20px;">
+        <a th:href="@{/admin/tariffs/add}" class="button button-success">Добавить новый тариф</a>
+    </div>
+
+    <div th:if="${tariffs != null and not #lists.isEmpty(tariffs)}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Тип услуги</th>
+                <th>Стоимость</th>
+                <th>Описание</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tariff : ${tariffs}">
+                <td th:text="${tariff.id}">1</td>
+                <td th:text="${tariff.name}">Супер Интернет</td>
+                <td th:text="${tariff.type.getDisplayName()}">INTERNET</td>
+                <td th:text="${#numbers.formatDecimal(tariff.monthlyPayment, 1, 'COMMA', 2, 'POINT')}">500.00</td>
+                <td th:text="${tariff.description}" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Очень быстро...</td>
+                <td class="table-actions">
+                    <a th:href="@{/admin/tariffs/edit/{id}(id=${tariff.id})}" class="button button-secondary action-button">Редакт.</a>
+
+                    <form th:action="@{/admin/tariffs/delete/{id}(id=${tariff.id})}" method="post" onsubmit="return confirm('Вы уверены, что хотите УДАЛИТЬ этот тариф? Это действие необратимо, если тариф не используется!');">
+                        <button type="submit" class="button button-danger action-button">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:unless="${tariffs != null and not #lists.isEmpty(tariffs)}">
+        <p class="message message-info">Нет доступных тарифных планов</p>
+    </div>
+
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
