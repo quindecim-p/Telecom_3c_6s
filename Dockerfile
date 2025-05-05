@@ -1,5 +1,5 @@
 # --- Стадия сборки (Build Stage) ---
-FROM eclipse-temurin:17-jdk-jammy as builder
+FROM eclipse-temurin:21-jdk-jammy as builder
 # Выбери базовый образ с JDK 17 (или новее, если нужно). Jammy - Ubuntu 22.04
 
 # Рабочая директория внутри контейнера
@@ -20,7 +20,7 @@ COPY src ./src
 RUN ./mvnw package -DskipTests
 
 # --- Финальная стадия (Final Stage) ---
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 # Используем образ только с JRE для уменьшения размера финального образа
 
 WORKDIR /app

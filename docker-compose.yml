@@ -9,7 +9,7 @@ services:
     environment:
       # ВАЖНО: Замени 'your_strong_password' на надежные пароли!
       MYSQL_ROOT_PASSWORD: root123 # Пароль для root пользователя MySQL
-      MYSQL_DATABASE: telecom_db # Имя базы данных, которую нужно создать
+      MYSQL_DATABASE: telecom # Имя базы данных, которую нужно создать
       MYSQL_USER: telecom_user # Имя пользователя для приложения
       MYSQL_PASSWORD: 123456 # Пароль для пользователя приложения
     ports:
@@ -40,7 +40,7 @@ services:
       - "8080:8080" # Локальный порт 8080 ведет к порту 8080 контейнера
     environment:
       # Переменные окружения для Spring Boot, переопределяющие application.properties
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/telecom_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/telecom?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: telecom_user # Должен совпадать с MYSQL_USER
       SPRING_DATASOURCE_PASSWORD: 123456 # Должен совпадать с MYSQL_PASSWORD
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate # Или 'update' для первого запуска, чтобы создать/обновить схему. 'validate' безопаснее. 'none' для продакшена.
