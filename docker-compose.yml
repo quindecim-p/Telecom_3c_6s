@@ -43,7 +43,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/telecom?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: telecom_user # Должен совпадать с MYSQL_USER
       SPRING_DATASOURCE_PASSWORD: 123456 # Должен совпадать с MYSQL_PASSWORD
-      SPRING_JPA_HIBERNATE_DDL_AUTO: validate # Или 'update' для первого запуска, чтобы создать/обновить схему. 'validate' безопаснее. 'none' для продакшена.
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update # Или 'update' для первого запуска, чтобы создать/обновить схему. 'validate' безопаснее. 'none' для продакшена.
       # Другие переменные окружения, если нужны (например, для профилей Spring)
       # SPRING_PROFILES_ACTIVE: docker
 
