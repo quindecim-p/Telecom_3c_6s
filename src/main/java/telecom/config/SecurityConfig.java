@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import telecom.enums.RoleType;
 
@@ -43,6 +44,12 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+
     /**
      * Основная конфигурация цепочки фильтров безопасности.
      */
@@ -60,7 +67,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login") // Страница логина
                         .loginProcessingUrl("/login") // URL, куда отправляется форма логина (обрабатывается Spring Security)
-                        .defaultSuccessUrl("/profile", true) // Куда редиректить после успешного логина
+                        .successHandler(customAuthenticationSuccessHandler()) // Куда редиректить после успешного логина
                         .failureUrl("/login?error=true") // Куда редиректить при ошибке логина
                         .permitAll() // Разрешить доступ к странице логина всем
                 )
