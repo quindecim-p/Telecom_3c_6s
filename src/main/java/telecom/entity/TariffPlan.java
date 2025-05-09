@@ -37,7 +37,7 @@ public class TariffPlan implements Serializable {
     private BigDecimal monthlyPayment;
 
     @NotBlank(message = "Заполните описание услуги")
-    @Column(length = 250, nullable = false)
+    @Column(length = 500, nullable = false)
     private String description;
 
     public TariffPlan(String name, TariffType type, BigDecimal monthlyPayment, String description) {

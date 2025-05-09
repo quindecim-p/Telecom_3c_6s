@@ -44,11 +44,13 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Бин для кастомной переадресации.
+     */
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
     }
-
 
     /**
      * Основная конфигурация цепочки фильтров безопасности.
